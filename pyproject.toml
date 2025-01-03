@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "crypt-pred"
+version = "0.1.0"
+description = ""
+authors = ["DanyaSH759 <shulyakdanila@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytorch-lightning = "^2.5.0.post0"
+torch = "^2.5.1"
+torchvision = "^0.20.1"
+torchaudio = "^2.5.1"
+numpy = "^2.2.1"
+pandas = "^2.2.3"
+scikit-learn = "^1.6.0"
+matplotlib = "^3.10.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

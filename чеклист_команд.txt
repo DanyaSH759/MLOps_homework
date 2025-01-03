@@ -1,0 +1,6 @@
+pre-commit run --files scripts/train.py
+
+tree > project_structure.txt
+tree -L 2 > project_structure.txt
+tree -L 2 --prune -I "venv" > project_structure.txt
+tree -a -L 2 > project_structure.txt
