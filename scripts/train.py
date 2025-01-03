@@ -10,10 +10,7 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, Dataset
 
-# from sklearn.metrics import mean_squared_error
 
-
-# === Dataset ===
 class CryptoDataset(Dataset):
     def __init__(self, data, seq_length):
         self.data = data

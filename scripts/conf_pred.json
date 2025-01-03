@@ -1,3 +1,3 @@
 {
-  "checkpoint_path": "lightning_logs/version_18/checkpoints/epoch=4999-step=25000.ckpt"
+  "checkpoint_path": "lightning_logs/version_0/checkpoints/epoch=4-step=25.ckpt"
 }

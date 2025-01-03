@@ -1,0 +1,15 @@
+pre-commit run --files scripts/train.py
+
+tree > project_structure.txt
+tree -L 2 > project_structure.txt
+tree -L 2 --prune -I "venv" > project_structure.txt
+tree -a -L 2 > project_structure.txt
+
+poetry remove pre-commit
+
+poetry add --dev pre-commit
+
+docker build -t my_model .
+
+docker run --rm -v $(pwd):/app  my_model python scripts/train.py
+docker run --rm -v $(pwd):/app  my_model python scripts/infer.py

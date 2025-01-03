@@ -6,7 +6,7 @@
 __pycache__/
 .pytest_cache/
 venv/
-*.csv
+# *.csv
 *.npy
 *.pkl
 # *.json
@@ -14,4 +14,4 @@ venv/
 .DS_Store
 *.sqlite3
 jupyter-data/*
-lightning_logs/*
+# lightning_logs/*
