@@ -1,6 +1,8 @@
 .
 ├── .git
+│   ├── COMMIT_EDITMSG
 │   ├── HEAD
+│   ├── ORIG_HEAD
 │   ├── branches
 │   ├── config
 │   ├── description
@@ -13,12 +15,18 @@
 │   └── refs
 ├── .gitignore
 ├── .pre-commit-config.yaml
+├── Dockerfile
 ├── README.md
 ├── data
 │   └── Прошлые_данныеCSV.csv
+├── info_project
+│   ├── project_structure.txt
+│   └── чеклист_команд.txt
 ├── lightning_logs
+│   └── version_0
 ├── poetry.lock
 ├── predict
+│   └── predictions_20250103_205803.csv
 ├── project_structure.txt
 ├── pyproject.toml
 ├── scripts
@@ -27,14 +35,13 @@
 │   ├── conf_train.json
 │   ├── infer.py
 │   └── train.py
-├── venv
-│   ├── bin
-│   ├── generated
-│   ├── include
-│   ├── lib
-│   ├── lib64 -> lib
-│   ├── pyvenv.cfg
-│   └── share
-└── чеклист_команд.txt
+└── venv
+    ├── bin
+    ├── generated
+    ├── include
+    ├── lib
+    ├── lib64 -> lib
+    ├── pyvenv.cfg
+    └── share
 
-19 directories, 18 files
+21 directories, 23 files

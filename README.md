@@ -47,12 +47,44 @@
 
 ## Структура проект
 
-\''' . ├── .git │   ├── HEAD │   ├── branches │   ├── config │   ├── description
-│   ├── hooks │   ├── index │   ├── info │   ├── logs │   ├── objects │   ├──
-packed-refs │   └── refs ├── .gitignore ├── .pre-commit-config.yaml ├──
-README.md ├── data │   └── Прошлые*данныеCSV.csv ├── lightning_logs ├──
-poetry.lock ├── predict ├── project_structure.txt ├── pyproject.toml ├── scripts
-│   ├── **pycache** │   ├── conf_pred.json │   ├── conf_train.json │   ├──
-infer.py │   └── train.py ├── venv │   ├── bin │   ├── generated │   ├── include
-│   ├── lib │   ├── lib64 -> lib │   ├── pyvenv.cfg │   └── share └──
-чеклист*команд.txt \'''
+```
+.
+├── .git
+│   ├── HEAD
+│   ├── branches
+│   ├── config
+│   ├── description
+│   ├── hooks
+│   ├── index
+│   ├── info
+│   ├── logs
+│   ├── objects
+│   ├── packed-refs
+│   └── refs
+├── .gitignore
+├── .pre-commit-config.yaml
+├── README.md
+├── data
+│   └── Прошлые_данныеCSV.csv
+├── lightning_logs
+├── poetry.lock
+├── predict
+├── project_structure.txt
+├── pyproject.toml
+├── scripts
+│   ├── __pycache__
+│   ├── conf_pred.json
+│   ├── conf_train.json
+│   ├── infer.py
+│   └── train.py
+├── venv
+│   ├── bin
+│   ├── generated
+│   ├── include
+│   ├── lib
+│   ├── lib64 -> lib
+│   ├── pyvenv.cfg
+│   └── share
+└── чеклист_команд.txt
+
+```
