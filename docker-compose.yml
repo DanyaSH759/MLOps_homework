@@ -1,3 +1,7 @@
+# networks:
+#   my_network:
+#     driver: bridge
+
 services:
   mlflow-service:
     image: ghcr.io/mlflow/mlflow:v2.15.1
@@ -21,6 +25,16 @@ services:
       - "5050:5000"
     volumes:
       - mlflow-data:/mlflow
+    # networks:
+    #   - my_network
+
+  # my_model:
+  #   build: .
+  #   command: ["python"]
+  #   volumes:
+  #     - .:/app
+  #   networks:
+  #     - my_network
 
 volumes:
   mlflow-data:

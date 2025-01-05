@@ -2,5 +2,5 @@ infer:
   seq_length: 30
   batch_size: 32
   # Здесь указана директория, куда автоматически сохраняется последняя модель
-  checkpoint_path: "/home/danila/mainpk/MLOPS_next/MLOps_homework/991201291581192129/bfe6f748b7154633ba569ee5c4b1dee7/checkpoints/epoch=7201-step=36010.ckpt"
+  checkpoint_path: "/home/danila/mainpk/MLOPS_next/MLOps_homework/lightning_logs/version_1/checkpoints/epoch=7079-step=35400.ckpt"
   filepath: "data/Прошлые_данныеCSV.csv"

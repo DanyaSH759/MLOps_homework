@@ -10,8 +10,11 @@ poetry remove pre-commit
 poetry add --dev pre-commit
 
 docker build -t my_model .
+docker network create my_network
 
 docker run --rm -v $(pwd):/app  my_model python scripts/train.py
 docker run --rm -v $(pwd):/app  my_model python scripts/infer.py
+docker run --rm -v $(pwd):/app --network=my_network my_model python scripts/train.py
+
 
 docker compose -f docker-compose.yml up
