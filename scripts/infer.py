@@ -1,10 +1,11 @@
-import json
 from datetime import datetime
 from math import sqrt
 
+import hydra
 import numpy as np
 import pandas as pd
 import torch
+from omegaconf import DictConfig
 from sklearn.metrics import mean_squared_error
 from torch.utils.data import DataLoader
 from train import (  # Импорт модели и функций из train.py
@@ -13,19 +14,15 @@ from train import (  # Импорт модели и функций из train.py
 )
 
 
-def main():
+@hydra.main(version_base="1.3.2", config_path="../configs", config_name="infer")
+def main(cfg: DictConfig):
+    # Функция по запуску выводу предсказаний модели
 
-    with open("scripts/conf_train.json", "r") as f:
-        config = json.load(f)
-
-    filepath = config["filepath"]
-    seq_length = config["seq_length"]
-    batch_size = config["batch_size"]
-
-    with open("scripts/conf_pred.json", "r") as f:
-        config = json.load(f)
-
-    checkpoint_path = config["checkpoint_path"]
+    # загрузка параметров
+    checkpoint_path = cfg.infer.checkpoint_path
+    seq_length = cfg.infer.seq_length
+    batch_size = cfg.infer.batch_size
+    filepath = cfg.infer.filepath
 
     # Prepare data
     _, _, test_dataset, _ = preprocess_time_series_data(filepath, seq_length)

@@ -1,0 +1,13 @@
+preprocess:
+  seq_length: 30
+  batch_size: 64
+  filepath: "data/Прошлые_данныеCSV.csv"
+
+model:
+  hidden_dim: 64
+  output_dim: 1
+  num_layers: 4
+
+training:
+  max_epochs: 5000
+  lr: 1e-5

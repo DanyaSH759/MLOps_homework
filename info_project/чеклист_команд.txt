@@ -13,3 +13,5 @@ docker build -t my_model .
 
 docker run --rm -v $(pwd):/app  my_model python scripts/train.py
 docker run --rm -v $(pwd):/app  my_model python scripts/infer.py
+
+docker compose -f docker-compose.yml up

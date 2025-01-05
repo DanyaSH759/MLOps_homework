@@ -1,17 +1,24 @@
-import json
-
+import hydra
+import mlflow
+import mlflow.pytorch
 import pandas as pd
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mlflow.tracking import MlflowClient
+from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
+from pytorch_lightning.loggers import MLFlowLogger
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, Dataset
 
 
 class CryptoDataset(Dataset):
+
+    """Класс датасета"""
+
     def __init__(self, data, seq_length):
         self.data = data
         self.seq_length = seq_length
@@ -29,6 +36,9 @@ class CryptoDataset(Dataset):
 
 # === LSTM Model ===
 class CryptoPricePredictor(pl.LightningModule):
+
+    """Класс нейросети"""
+
     def __init__(self, input_dim, hidden_dim, output_dim, num_layers, lr):
         super(CryptoPricePredictor, self).__init__()
         self.save_hyperparameters()  # Сохраняем гиперпараметры
@@ -91,6 +101,7 @@ def preprocess_time_series_data(file_path, seq_length, target_column="Цена")
     column_to_move = data.pop(target_column)
     data[target_column] = column_to_move
 
+    # перевод в формат numpy
     data = data.values
 
     # Split data
@@ -117,19 +128,74 @@ def preprocess_time_series_data(file_path, seq_length, target_column="Цена")
     return train_dataset, val_dataset, test_dataset, input_dim  # , scaler
 
 
-def main():
+def download_mlflow_plot(run_name):
 
-    with open("scripts/conf_train.json", "r") as f:
-        config = json.load(f)
+    """При условии завяски mlflow на корневые папки а не на S3.
+    Скачивает графики"""
 
-    filepath = config["filepath"]
-    seq_length = config["seq_length"]
-    batch_size = config["batch_size"]
-    hidden_dim = config["hidden_dim"]
-    output_dim = config["output_dim"]
-    num_layers = config["num_layers"]
-    lr = config["lr"]
-    max_epochs = config["max_epochs"]
+    # Создаем клиент
+    client = MlflowClient()
+
+    # Получаем эксперимент
+    experiment = client.get_experiment_by_name(run_name)
+
+    # Получаем последний запуск (RUN)
+    runs = client.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        order_by=["start_time DESC"],
+        max_results=1,
+    )
+
+    if runs:
+        last_run_id = runs[0].info.run_id
+        print(f"Последний Run ID: {last_run_id}")
+    else:
+        print("Нет запусков в эксперименте.")
+
+    client = MlflowClient()
+    local_dir = "./plots"
+    artifact_path = "plots"
+    client.download_artifacts(
+        run_id=last_run_id, path=artifact_path, dst_path=local_dir
+    )
+
+    print(f"Артефакты из Run ID {last_run_id } сохранены в папке: {local_dir}")
+
+
+@hydra.main(version_base="1.3.2", config_path="../configs", config_name="train")
+def main(cfg: DictConfig):
+
+    """Основная функция для запуска обучения"""
+
+    print(f"Гиперпараметры из Hydra: {cfg}")
+
+    # загрузка параметров с конфигов
+    filepath = cfg.preprocess.filepath
+    seq_length = cfg.preprocess.seq_length
+    batch_size = cfg.preprocess.batch_size
+    hidden_dim = cfg.model.hidden_dim
+    output_dim = cfg.model.output_dim
+    num_layers = cfg.model.num_layers
+    lr = cfg.training.lr
+    max_epochs = cfg.training.max_epochs
+
+    # Инициализация MLflow
+    run_name = "Crypto_Price_Prediction"
+    mlflow.start_run(run_name=run_name)
+
+    # Логируем гиперпараметры
+    mlflow.log_params(
+        {
+            "filepath": cfg.preprocess.filepath,
+            "seq_length": cfg.preprocess.seq_length,
+            "batch_size": cfg.preprocess.batch_size,
+            "hidden_dim": cfg.model.hidden_dim,
+            "output_dim": cfg.model.output_dim,
+            "num_layers": cfg.model.num_layers,
+            "lr": cfg.training.lr,
+            "max_epochs": cfg.training.max_epochs,
+        }
+    )
 
     # Prepare data
     train_dataset, val_dataset, _, input_dim = preprocess_time_series_data(
@@ -145,14 +211,22 @@ def main():
     checkpoint_callback = ModelCheckpoint(monitor="val_loss", save_top_k=1, mode="min")
     early_stop_callback = EarlyStopping(monitor="val_loss", patience=5, mode="min")
 
+    # связываемся с логером
+    mlflow_logger = MLFlowLogger(
+        experiment_name="Crypto_Price_Prediction", tracking_uri="http://localhost:5050"
+    )
+
     # Training
     trainer = Trainer(
         max_epochs=max_epochs,
         callbacks=[checkpoint_callback, early_stop_callback],
         log_every_n_steps=1,
+        logger=mlflow_logger,
     )
     trainer.fit(model, train_loader, val_loader)
 
+    # При условии отключения logger=mlflow_logger данные по модели будут сохраняться
+    # через данный вызов
     checkpoint_callback = ModelCheckpoint(
         monitor="val_loss",
         save_top_k=1,
@@ -160,6 +234,8 @@ def main():
         dirpath="checkpoints/",  # Папка для сохранения чекпоинтов
         filename="crypto-model-{epoch:02d}-{val_loss:.2f}",  # Формат имени файла
     )
+
+    # download_mlflow_plot(run_name)
 
 
 if __name__ == "__main__":
